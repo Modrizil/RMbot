@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+
+<robot name="smartcar" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="PI" value="3.1415926535897931"/>
+
+    <xacro:property name="chassisHeight" value="0.05"/>
+
+    <xacro:property name="chassisLength" value="0.25"/>
+
+    <xacro:property name="chassisWidth" value="0.16"/>
+
+    <xacro:property name="chassisMass" value="50"/>
+
+    <xacro:property name="wheelWidth" value="0.02"/>
+
+    <xacro:property name="wheelRadius" value="0.05"/>
+
+    <xacro:property name="wheelMass" value="5"/>
+
+    <xacro:property name="cameraSize" value="0.03"/>
+
+    <xacro:property name="cameraMass" value="0.1"/>
+
+
+    <xacro:include filename="$(find RMbot_description)/urdf/macros.xacro" />
+
+<!-- car model -->
+
+<link name="footprint" />
+
+
+    <joint name="base_joint" type="fixed">
+
+      <parent link="footprint"/>
+
+      <child link="base_link"/>
+
+    </joint>
+
+
+
+<link name="base_link">
+
+    <visual>
+
+        <geometry>
+            <!-- <box size="0.25 .16 .05"/> -->
+            <box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/> 
+        </geometry>
+
+        <origin rpy="0 0 0" xyz="0 0 ${wheelRadius}"/>
+
+        <material name="gree">
+            <color rgba="0 0 .8 1"/>
+        </material>
+
+    </visual>
+
+    <collision> 
+
+        <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/> 
+
+        <geometry> 
+            <box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/> 
+        </geometry> 
+
+    </collision>
+
+    <inertial> 
+
+        <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/> 
+
+        <mass value="${chassisMass}"/> 
+
+        <xacro:box_inertia m="${chassisMass}" x="${chassisLength}" y="${chassisWidth}" z="${chassisHeight}"/>
+
+    </inertial>
+
+</link>
+
+<!-- Add wheels to the chassis -->
+
+ <link name="left_front_wheel">
+
+    <visual>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+    </collision>
+
+
+  </link>
+
+  <joint name="left_front_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="left_front_wheel"/>
+    <origin rpy="${PI/2} 0 0" xyz="0.12 0.1 ${wheelRadius}"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+
+ <link name="right_front_wheel">
+    <visual>
+      <geometry>
+        <cylinder length=".02" radius="0.05"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="right_front_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="right_front_wheel"/>
+    <origin rpy="${PI/2} 0 0" xyz="0.12 -0.1 ${wheelRadius}"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+
+  <link name="right_back_wheel">
+
+    <visual>
+      <geometry>
+        <cylinder length=".02" radius="0.05"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_back_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="right_back_wheel"/>
+    <origin rpy="${PI/2} 0 0" xyz="-0.12 -0.1 ${wheelRadius}"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+ </joint>
+
+  <link name="left_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="left_back_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="left_back_wheel"/>
+    <origin rpy="${PI/2} 0 0" xyz="-0.12 0.1 ${wheelRadius}"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<!-- Add camera to chassis -->
+
+  <joint name="camera_holder_fixed" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_holder"/>
+    <origin xyz="-0.1 0.0 0.15"/>
+    <axis xyz="0 0 1" rpy="0 0 0" />
+  </joint>
+
+  <link name="camera_holder">
+    <visual>
+      <geometry>
+        <box size=".01 .01 .15"/>
+      </geometry>
+
+      <!-- <origin rpy="0 0 0" xyz="0 0 0.075" /> -->
+
+      <material name="white">
+          <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+
+    <collision>
+        <geometry>
+            <box size=".01 .01 .15"/>
+        </geometry>
+    </collision>
+  </link>
+
+
+  <joint name="camera_fixed" type="fixed">
+    <parent link="camera_holder"/>
+    <child link="camera"/>
+    <origin xyz="0.015 0.0 0.05"/>
+    <axis rpy="0 0 0" xyz="1 0 0" />
+  </joint>
+
+  <link name="camera">
+    <visual>
+      <geometry>
+        <box size=".02 .03 .03"/>
+      </geometry>
+
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+
+      <material name="black">
+          <color rgba="0 0 0.1 1"/>
+      </material>
+    </visual>
+
+    <collision>
+        <geometry>
+            <box size=".02 .03 .03"/>
+        </geometry>
+    </collision>
+  </link>
+
+</robot>

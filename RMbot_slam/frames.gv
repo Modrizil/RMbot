@@ -1,0 +1,8 @@
+digraph G {
+"odom" -> "base_link"[label="Broadcaster: /RMbot_chassis_node\nAverage rate: 95.424 Hz\nMost recent transform: 1618217705.685 ( 0.006 sec old)\nBuffer length: 4.988 sec\n"];
+"base_link" -> "laser_frame"[label="Broadcaster: /base_link_to_laser4\nAverage rate: 25.139 Hz\nMost recent transform: 1618217705.720 ( -0.028 sec old)\nBuffer length: 4.972 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1618217705.691"[ shape=plaintext ] ;
+ }->"odom";
+}
